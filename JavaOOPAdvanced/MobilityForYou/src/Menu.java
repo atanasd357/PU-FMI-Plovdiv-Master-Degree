@@ -26,16 +26,17 @@ public class Menu {
 		System.out.println("\t5. Show the entire MobilityForYou catalogue sorted by car-type: ");
 		System.out.println("\t6. Show the entire MobilityForYou catalogue sorted by brand: ");
 		System.out.println("\t7. Write to file: ");
-		System.out.println("\t8. Stop the program");
+		System.out.println("\t8. Write different car types to different files: ");
+		System.out.println("\t9. Stop the program");
 		choice = scanner.nextLine();
 	}
 
 	public void goAroundMenu() {
 
 		while (true) {
-			
+
 			mainMenu();
-			
+
 			switch (choice) {
 			case "1":
 				catalogue.printCatalogue();
@@ -59,8 +60,13 @@ public class Menu {
 				break;
 			case "7":
 				catalogue.writeFile();
+				System.out.println("The file is writed successfully!");
 				break;
 			case "8":
+				catalogue.writeToDifferentFiles();
+				System.out.println("The files are writed successfully!");
+				break;
+			case "9":
 				return;
 			default:
 				continue;

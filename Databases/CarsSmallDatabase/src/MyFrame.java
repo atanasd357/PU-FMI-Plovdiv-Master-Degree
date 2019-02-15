@@ -31,6 +31,9 @@ public class MyFrame extends JFrame {
 	private JPanel rightPanel = new JPanel();
 	private JPanel leftUpPanel = new JPanel();
 	private JPanel leftDownPanel = new JPanel();
+	//split the left down panel into 2 new panels
+	private JPanel leftDownLeftPanel = new JPanel();
+	private JPanel leftDownRightPanel = new JPanel();
 
 	private JLabel modelLabel = new JLabel("Model");
 	private JLabel brandLabel = new JLabel("Brand");
@@ -40,12 +43,16 @@ public class MyFrame extends JFrame {
 	private JTextField modelJTField = new JTextField();
 	private JTextField priceJTField = new JTextField();
 	private JTextField enginePowerJTField = new JTextField();
+	//search text field
+	private JTextField searchJTField = new JTextField();
 
 	String[] contentComboBox = { "Audi", "Ford", "Lexus", "BMW" };
 	JComboBox<String> brandComboBox = new JComboBox<>(contentComboBox);
 
 	JButton addBtn = new JButton("Add");
 	JButton deleteBtn = new JButton("Delete");
+	//search button
+	JButton searchBtn = new JButton("Search");
 
 	public MyFrame() {
 		this.setVisible(true);
@@ -72,10 +79,21 @@ public class MyFrame extends JFrame {
 		leftUpPanel.add(brandComboBox);
 
 		// leftDownPanel
-		leftDownPanel.add(addBtn);
-		leftDownPanel.add(deleteBtn);
+		//set new layout to left down panel
+		leftDownPanel.setLayout(new GridLayout(1, 2));
+		leftDownPanel.add(leftDownLeftPanel);
+		leftDownPanel.add(leftDownRightPanel);
+		
+		//set new layout to left down right panel
+		leftDownRightPanel.setLayout(new GridLayout(4, 1));
+		leftDownRightPanel.add(addBtn);
+		leftDownRightPanel.add(deleteBtn);
 		addBtn.addActionListener(new AddAction());
 		deleteBtn.addActionListener(new DelAction());
+		//add search text field, button and search button ActionListener 
+		leftDownRightPanel.add(searchJTField);
+		leftDownRightPanel.add(searchBtn);
+		searchBtn.addActionListener(new SearchAction());
 
 		// right panel
 		scroller.setPreferredSize(new Dimension(350, 225));
@@ -110,7 +128,7 @@ public class MyFrame extends JFrame {
 		}
 	}
 
-	class DelAction implements ActionListener{
+	class DelAction implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -125,9 +143,30 @@ public class MyFrame extends JFrame {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-		}	
+		}
 	}
-	
+
+	// SearchAction
+	class SearchAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String searchValue = searchJTField.getText();
+			conn = DBConnector.getConnection();
+			String sql = "SELECT * FROM CAR WHERE Brand LIKE ?";
+			try {
+				state = conn.prepareStatement(sql);
+				state.setString(1, "%" + searchValue + "%");
+				result = state.executeQuery();
+				table.setModel(new MyModel(result));
+			} catch (SQLException exc) {
+				exc.printStackTrace();
+			} catch (Exception exc) {
+				exc.printStackTrace();
+			}
+		}
+	}
+
 	class MouseClicked implements MouseListener {
 
 		@Override
@@ -145,7 +184,7 @@ public class MyFrame extends JFrame {
 		}
 
 		@Override
-		public void mouseEntered(MouseEvent e) {			
+		public void mouseEntered(MouseEvent e) {
 		}
 
 		@Override

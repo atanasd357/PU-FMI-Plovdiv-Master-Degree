@@ -120,7 +120,6 @@ public class Catalogue {
 		try {
 
 			FileWriter fw = new FileWriter(this.filePath);
-			@SuppressWarnings("resource")
 			BufferedWriter bw = new BufferedWriter(fw);
 			String temp;
 
@@ -143,7 +142,52 @@ public class Catalogue {
 					break;
 				}
 			}
-			bw.flush();
+			bw.close();
+		} catch (Exception e) {
+
+			System.out.println("Wrong path or missing file!");
+		}
+	}
+
+	public void writeToDifferentFiles() {
+
+		try {
+
+			// creating files in the project folder
+			FileWriter fileWr1 = new FileWriter("GAS_CAR.txt");
+			FileWriter fileWr2 = new FileWriter("ELECTRIC_CAR.txt");
+			FileWriter fileWr3 = new FileWriter("HYBRID_CAR.txt");
+
+			BufferedWriter buffWr1 = new BufferedWriter(fileWr1);
+			BufferedWriter buffWr2 = new BufferedWriter(fileWr2);
+			BufferedWriter buffWr3 = new BufferedWriter(fileWr3);
+
+			String temp;
+
+			for (Vehicle v : this.list) {
+				temp = v.getClass().getSimpleName();
+
+				switch (temp) {
+
+				case "GasCar":
+					buffWr1.write(carType[1] + " " + ((GasCar) v).printGasCar());
+					buffWr1.newLine();
+					break;
+				case "ElectricCar":
+					buffWr2.write(carType[0] + " " + ((ElectricCar) v).printElectricCar());
+					buffWr2.newLine();
+					break;
+				case "HybridCar":
+					buffWr3.write(carType[2] + " " + ((HybridCar) v).printHybridCar());
+					buffWr3.newLine();
+					break;
+				}
+			}
+
+			buffWr1.close();
+			buffWr2.close();
+			buffWr3.close();
+
 		} catch (Exception e) {
 
 			System.out.println("Wrong path or missing file!");
